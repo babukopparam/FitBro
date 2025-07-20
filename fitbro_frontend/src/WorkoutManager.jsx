@@ -12,6 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import LibraryBooksIcon from "@mui/icons-material/LibraryBooks";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ArchiveIcon from "@mui/icons-material/Archive";
@@ -37,6 +38,7 @@ export default function WorkoutManager() {
     const [success, setSuccess] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [statusFilter, setStatusFilter] = useState("All");
+    const [programFilter, setProgramFilter] = useState("All");
     const [deleteDialog, setDeleteDialog] = useState({ open: false, workout: null });
     const [formLoading, setFormLoading] = useState(false);
     const [formFields, setFormFields] = useState({ name: "", description: "", program_id: "", active: true });
@@ -80,7 +82,8 @@ export default function WorkoutManager() {
             || (w.description || "").toLowerCase().includes(searchTerm.toLowerCase());
         const matchStatus = statusFilter === "All" ||
             (statusFilter === "Active" ? w.active : !w.active);
-        return matchSearch && matchStatus;
+        const matchProgram = programFilter === "All" || w.program_id === Number(programFilter);
+        return matchSearch && matchStatus && matchProgram;
     });
     const masterWorkouts = filteredWorkouts.filter((w) => w.is_master);
     const gymWorkouts = filteredWorkouts.filter((w) => !w.is_master && w.gym_id === MY_GYM_ID);
@@ -356,6 +359,26 @@ export default function WorkoutManager() {
                     <MenuItem value="All">All Status</MenuItem>
                     <MenuItem value="Active">Active</MenuItem>
                     <MenuItem value="Inactive">Inactive</MenuItem>
+                </TextField>
+                <TextField
+                    select
+                    size="small"
+                    value={programFilter}
+                    onChange={e => setProgramFilter(e.target.value)}
+                    variant="outlined"
+                    InputProps={{
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <LibraryBooksIcon />
+                            </InputAdornment>
+                        )
+                    }}
+                    sx={{ width: { xs: "100%", sm: 220 } }}
+                >
+                    <MenuItem value="All">All Programs</MenuItem>
+                    {programs.map(p => (
+                        <MenuItem key={p.id} value={p.id}>{p.name}</MenuItem>
+                    ))}
                 </TextField>
             </Stack>
 
