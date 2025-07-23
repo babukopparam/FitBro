@@ -1,0 +1,1 @@
+python -m uvicorn fitbro_backend.main:app --reload
