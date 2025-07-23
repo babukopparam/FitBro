@@ -11,12 +11,12 @@ db: Session = SessionLocal()
 
 # USERS
 users = [
-    User(mobile="9999990001", name="FitBro Admin", role=RoleEnum.admin),
-    User(mobile="9999990002", name="FitBro Officer", role=RoleEnum.officer),
-    User(mobile="8888881001", name="XYZ Gym Owner", role=RoleEnum.gym_owner),
-    User(mobile="8888881002", name="XYZ Gym Instructor", role=RoleEnum.instructor),
-    User(mobile="8888881003", name="ABC Gym Owner", role=RoleEnum.gym_owner),
-    User(mobile="8888881004", name="ABC Gym Instructor", role=RoleEnum.instructor),
+    User(mobile="9999990001", name="FitBro Admin", role=RoleEnum.FITBRO_ADMIN),
+    User(mobile="9999990002", name="FitBro Officer", role=RoleEnum.FITBRO_OFFICER),
+    User(mobile="8888881001", name="XYZ Gym Owner", role=RoleEnum.GYM_OWNER),
+    User(mobile="8888881002", name="XYZ Gym Instructor", role=RoleEnum.GYM_INSTRUCTOR),
+    User(mobile="8888881003", name="ABC Gym Owner", role=RoleEnum.GYM_OWNER),
+    User(mobile="8888881004", name="ABC Gym Instructor", role=RoleEnum.GYM_INSTRUCTOR),
 ]
 
 # GYMS

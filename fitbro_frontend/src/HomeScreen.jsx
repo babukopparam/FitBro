@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Box, Typography, Paper, Grid, Divider, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField,
+  List, ListItem, ListItemIcon, ListItemText,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import AssessmentIcon from "@mui/icons-material/Assessment";
@@ -14,6 +15,8 @@ const user = {
   interim: { weight: 85, bmi: 28 },
   goal: { weight: 65, bmi: 26 },
 };
+
+const gymName = "XYZ";
 
 const announcements = [
   "New HIIT workouts added to the program!",
@@ -133,25 +136,27 @@ function WorkoutDayDialog({ open, onClose, dayData }) {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle>
-        Workout for {dayData.dateString}
+      <DialogTitle sx={{ fontWeight: 700 }}>
+        {dayData.exerciseName} - {dayData.dateObj.toLocaleDateString()}
       </DialogTitle>
-      <DialogContent>
-        <Typography variant="subtitle2">Planned:</Typography>
-        <div>Exercise: {dayData.exerciseName}</div>
-        <div>Sets: {dayData.plannedSets}</div>
-        <div>Reps: {dayData.plannedReps}</div>
+      <DialogContent dividers>
+        <Typography variant="subtitle2" fontWeight={600}>Planned</Typography>
+        <Grid container spacing={2} sx={{ mb: 1 }}>
+          <Grid item xs={6}>Sets: {dayData.plannedSets}</Grid>
+          <Grid item xs={6}>Reps: {dayData.plannedReps}</Grid>
+        </Grid>
         {(isCompleted || isTerminated) && (
           <>
-            <Divider sx={{ my: 1 }} />
-            <Typography variant="subtitle2">Actual:</Typography>
-            <div>Actual Sets: {dayData.actualSets}</div>
-            <div>Actual Reps: {dayData.actualReps}</div>
-            {dayData.notes && <div>Notes: {dayData.notes}</div>}
+            <Typography variant="subtitle2" fontWeight={600}>Actual</Typography>
+            <Grid container spacing={2} sx={{ mb: 1 }}>
+              <Grid item xs={6}>Sets: {dayData.actualSets}</Grid>
+              <Grid item xs={6}>Reps: {dayData.actualReps}</Grid>
+            </Grid>
+            {dayData.notes && <Typography variant="body2" sx={{ mb: 1 }}>Notes: {dayData.notes}</Typography>}
           </>
         )}
         {isTerminated && dayData.terminationReason && (
-          <div style={{ color: 'red', marginTop: 8 }}>Terminated: {dayData.terminationReason}</div>
+          <Typography color="error" sx={{ mt: 1 }}>Terminated: {dayData.terminationReason}</Typography>
         )}
         {isFuture && (
           <Button onClick={handleSwapToToday} variant="contained" color="primary" sx={{ mt: 2 }} fullWidth>
@@ -192,7 +197,7 @@ function WorkoutDayDialog({ open, onClose, dayData }) {
             Submit
           </Button>
         )}
-        <Button onClick={onClose} color="inherit">Close</Button>
+        <Button onClick={onClose} variant="outlined">Close</Button>
       </DialogActions>
     </Dialog>
   );
@@ -246,78 +251,71 @@ export default function HomeScreen() {
       {/* Welcome */}
       <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2, textAlign: "center" }}>
         <Typography variant="h6" sx={{ fontWeight: 700 }}>
-          Welcome, {user.firstName}
+          Hi {user.firstName}
+        </Typography>
+        <Typography variant="subtitle2" sx={{ fontWeight: 500 }}>
+          Welcome {gymName} Gym
         </Typography>
       </Paper>
 
       {/* Fitness Goal */}
       <Paper elevation={2} sx={{ p: 2, borderRadius: 3, mb: 2 }}>
         <Typography variant="subtitle1" sx={{ fontWeight: 600, mb: 1 }}>
-          Fitness Goal
+          Your Fitness Journey
         </Typography>
-        <Grid container alignItems="center" spacing={0} sx={{ mb: 1 }}>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="caption" sx={{ fontWeight: 600, color: "primary.main" }}>
-              NOW
-            </Typography>
+        <Grid container alignItems="center" spacing={1}>
+          <Grid item xs={4} textAlign="center">
+            <Typography variant="caption" fontWeight={600} color="primary.main">NOW</Typography>
+            <Typography variant="body2" fontWeight={500}>{user.now.weight}kg</Typography>
+            <Typography variant="caption">BMI {user.now.bmi}</Typography>
           </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="caption" sx={{ fontWeight: 600, color: "secondary.main" }}>
-              Interim Target
-            </Typography>
+          <Grid item xs={4} textAlign="center">
+            <Typography variant="caption" fontWeight={600} color="secondary.main">INTERIM</Typography>
+            <Typography variant="body2" fontWeight={500}>{user.interim.weight}kg</Typography>
+            <Typography variant="caption">BMI {user.interim.bmi}</Typography>
           </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="caption" sx={{ fontWeight: 600, color: "#2e7d32" }}>
-              Goal
-            </Typography>
-          </Grid>
-        </Grid>
-        <Divider />
-        {/* Weight row */}
-        <Grid container alignItems="center" spacing={0} sx={{ mt: 1 }}>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>Wt: {user.now.weight}kg</Typography>
-          </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{user.interim.weight}kg</Typography>
-          </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{user.goal.weight}kg</Typography>
+          <Grid item xs={4} textAlign="center">
+            <Typography variant="caption" fontWeight={600} color="#2e7d32">GOAL</Typography>
+            <Typography variant="body2" fontWeight={500}>{user.goal.weight}kg</Typography>
+            <Typography variant="caption">BMI {user.goal.bmi}</Typography>
           </Grid>
         </Grid>
-        {/* BMI row */}
-        <Grid container alignItems="center" spacing={0}>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>BMI: {user.now.bmi}</Typography>
-          </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{user.interim.bmi}</Typography>
-          </Grid>
-          <Grid item xs={4} sx={{ textAlign: "center" }}>
-            <Typography variant="body2" sx={{ fontWeight: 500 }}>{user.goal.bmi}</Typography>
-          </Grid>
-        </Grid>
-        {/* Progress bar/icon between NOW and Interim */}
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 1 }}>
-          <TrendingUpIcon sx={{ fontSize: 32, color: "orange" }} />
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+          <TrendingUpIcon sx={{ fontSize: 30, color: "orange" }} />
         </Box>
       </Paper>
 
       {/* Announcements/Tips */}
       {(announcements.length > 0 || tips.length > 0) && (
-        <Paper elevation={1} sx={{ p: 1.5, borderRadius: 2, mb: 2 }}>
+        <Paper elevation={1} sx={{ p: 2, borderRadius: 2, mb: 2 }}>
           {announcements.length > 0 && (
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-              <InfoOutlinedIcon color="primary" sx={{ mr: 1 }} />
-              <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                {announcements[0]}
-              </Typography>
+            <Box mb={1}>
+              <Typography variant="subtitle2" fontWeight={600} mb={0.5}>Announcements</Typography>
+              <List dense>
+                {announcements.map((a, idx) => (
+                  <ListItem key={idx} disableGutters sx={{ alignItems: 'flex-start' }}>
+                    <ListItemIcon sx={{ minWidth: 32 }}>
+                      <InfoOutlinedIcon color="primary" />
+                    </ListItemIcon>
+                    <ListItemText primary={a} />
+                  </ListItem>
+                ))}
+              </List>
             </Box>
           )}
           {tips.length > 0 && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <EmojiEventsIcon color="success" sx={{ mr: 1 }} />
-              <Typography variant="body2">{tips[0]}</Typography>
+            <Box>
+              <Typography variant="subtitle2" fontWeight={600} mb={0.5}>Tips</Typography>
+              <List dense>
+                {tips.map((t, idx) => (
+                  <ListItem key={idx} disableGutters sx={{ alignItems: 'flex-start' }}>
+                    <ListItemIcon sx={{ minWidth: 32 }}>
+                      <EmojiEventsIcon color="success" />
+                    </ListItemIcon>
+                    <ListItemText primary={t} />
+                  </ListItem>
+                ))}
+              </List>
             </Box>
           )}
         </Paper>
@@ -328,9 +326,9 @@ export default function HomeScreen() {
         <Typography align="center" sx={{ mb: 1, fontWeight: "bold" }}>
           July 2025
         </Typography>
-        <Grid container spacing={1}>
+        <Grid container columns={7} spacing={1}>
           {daysOfWeek.map((day, idx) => (
-            <Grid item xs={1.7} key={idx}>
+            <Grid item xs={1} key={idx}>
               <Typography
                 variant="body2"
                 align="center"
@@ -345,9 +343,9 @@ export default function HomeScreen() {
           ))}
         </Grid>
         {grid.map((weekRow, weekIdx) => (
-          <Grid container spacing={1} key={weekIdx} sx={{ mt: 0.2 }}>
+          <Grid container columns={7} spacing={1} key={weekIdx} sx={{ mt: 0.2 }}>
             {weekRow.map((day, idx2) => {
-              if (!day) return <Grid item xs={1.7} key={idx2}></Grid>;
+              if (!day) return <Grid item xs={1} key={idx2}></Grid>;
               const isToday =
                 day.dateObj.getDate() === todayDate &&
                 day.dateObj.getMonth() === todayMonth &&
@@ -366,7 +364,7 @@ export default function HomeScreen() {
                 getMonthShort(day.dateObj.getMonth());
 
               return (
-                <Grid item xs={1.7} key={idx2}>
+                <Grid item xs={1} key={idx2}>
                   <Box
                     onClick={() => handleCellClick(day)}
                     sx={{
@@ -389,18 +387,20 @@ export default function HomeScreen() {
                     }}
                   >
                     {/* Top-right date */}
-                    <span
-                      style={{
-                        position: "absolute",
-                        top: 5,
-                        right: 7,
-                        fontSize: 10,
-                        fontWeight: 600,
-                        opacity: 0.85,
-                      }}
-                    >
-                      {dateString}
-                    </span>
+                    {isToday && (
+                      <span
+                        style={{
+                          position: "absolute",
+                          top: 5,
+                          right: 7,
+                          fontSize: 10,
+                          fontWeight: 600,
+                          opacity: 0.85,
+                        }}
+                      >
+                        {dateString}
+                      </span>
+                    )}
                     {/* Center icon */}
                     <span
                       style={{
